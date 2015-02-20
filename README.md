@@ -1,4 +1,4 @@
-# Office-Management-System
+# Office Management System
 The software Office Management Systems objective is to provide a system which manages the office activities using a computer within a fraction of seconds. The software stores all the important data’s like a manual file keeping system through a database. This automated system is user friendly and error free. Paper work and manual power can be reduced using this automated system.
 
 Description:

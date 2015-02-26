@@ -56,6 +56,19 @@ namespace OMS.Models
         [Display(Name = "Salary", GroupName = "Employee Details")]
         [DisplayFormat(DataFormatString = "{0:c}")]
         public decimal Salary { get; set; }
+
+        #region Navigation Properties
+
+        // Foreign Key, with Leaves Table
+        public virtual ICollection<Leaves> Leaves { get; set; }
+
+        // Foreign Key, with Leave Applications
+        public virtual ICollection<LeaveApplications> LeaveApplications { get; set; }
+
+        // Foreign Key, with Leave Applications (Approvers)
+        public virtual ICollection<LeaveApplications> Approvers { get; set; }
+
+        #endregion
     }
 
     [Table("Leaves")]
@@ -114,4 +127,72 @@ namespace OMS.Models
 
     }
 
+    [Table("Leave Applications")]
+    public class LeaveApplications : RecordDetails
+    {
+        // Setting Default Values using Constructor
+        public LeaveApplications()
+        {
+            AppliedOn = DateTime.Today;
+            Approved = false;
+        }
+
+        [Key]
+        [Display(Name = "ID", GroupName = "Employee's Leave Applications Details")]
+        public int ID { get; set; }
+
+        #region Employee ID (foreign key)
+
+        [Required]
+        [Column("EmployeeID")]
+        [Display(Name = "Employee", GroupName = "Employee's Leave Applications Details")]
+        public int EmployeeID { get; set; }
+
+        [ForeignKey("EmployeeID")]
+        public Employee Employee { get; set; }
+
+        #endregion
+
+        [Required]
+        [Column("StartDate", TypeName = "Date")]
+        [DataType(DataType.Date)]
+        [Display(Name = "Start Date", GroupName = "Employee's Leave Applications Details")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime StartDate { get; set; }
+
+        [Required]
+        [Column("EndDate", TypeName = "Date")]
+        [DataType(DataType.Date)]
+        [Display(Name = "End Date", GroupName = "Employee's Leave Applications Details")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime EndDate { get; set; }
+
+        [Column("Approved")]
+        [Display(Name = "Is Approved?")]
+        public bool Approved { get; set; }
+
+        [Column("AppliedOn", TypeName = "Date")]
+        [DataType(DataType.Date)]
+        [Display(Name = "Applied On", GroupName = "Employee's Leave Applications Details")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime AppliedOn { get; set; }
+
+        [Column("ApprovedOn", TypeName = "Date")]
+        [DataType(DataType.Date)]
+        [Display(Name = "Approved On", GroupName = "Employee's Leave Applications Details")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true, NullDisplayText = "Not Approved Yet.")]
+        public DateTime ApprovedOn { get; set; }
+
+        #region Employee ID (foreign key)
+
+        [Required]
+        [Column("ApprovalID")]
+        [Display(Name = "Approval", GroupName = "Employee's Leave Applications Details")]
+        public int? ApprovalID { get; set; }
+
+        [ForeignKey("ApprovalID")]
+        public Employee Approval { get; set; }
+
+        #endregion
+    }
 }

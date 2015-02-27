@@ -59,15 +59,15 @@ namespace OMS.Models
 
         #region Navigation Properties
 
-        // Foreign Key, with Leaves Table
-        public virtual ICollection<Leaves> Leaves { get; set; }
+        // Foreign Key, with Leaves
+        public virtual Leaves Leaves { get; set; }
 
         // Foreign Key, with Leave Applications
         public virtual ICollection<LeaveApplications> LeaveApplications { get; set; }
 
-        // Foreign Key, with Leave Applications (Approvers)
-        public virtual ICollection<LeaveApplications> Approvers { get; set; }
-
+        // Foreign Key, with Leave Approvals
+        public virtual ICollection<LeaveApprovals> LeaveApprovals { get; set; }
+        
         #endregion
     }
 
@@ -81,17 +81,14 @@ namespace OMS.Models
             Applied = 0;
             MonthlyLimit = 1;
         }
-
-        [Key]
-        [Display(Name = "ID", GroupName = "Employee's Leaves Details")]
-        public int ID { get; set; }
-
+        
         #region Employee ID (foreign key)
 
         [Required]
         [Column("EmployeeID")]
         [Display(Name = "Employee", GroupName = "Employee's Leaves Details")]
         [ForeignKey("Employee")]
+        [Key]
         public int EmployeeID { get; set; }
 
         public Employee Employee { get; set; }
@@ -146,9 +143,9 @@ namespace OMS.Models
         [Required]
         [Column("EmployeeID")]
         [Display(Name = "Employee", GroupName = "Employee's Leave Applications Details")]
+        [ForeignKey("Employee")]
         public int EmployeeID { get; set; }
 
-        [ForeignKey("EmployeeID")]
         public Employee Employee { get; set; }
 
         #endregion
@@ -177,22 +174,49 @@ namespace OMS.Models
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime AppliedOn { get; set; }
 
+        #region Navigation Properties
+
+        // Foreign Key, with Leave Approvals
+        public virtual LeaveApprovals LeaveApprovals { get; set; }
+        
+        #endregion
+        
+    }
+
+    [Table("Leave Approvals")]
+    public class LeaveApprovals : RecordDetails
+    {
+        #region Application ID (foreign key)
+
+        [Required]
+        [Column("ApplicationID")]
+        [Display(Name = "Application ID", GroupName = "Employee's Leave Approvals Details")]
+        [ForeignKey("Application")]
+        [Key]
+        public int ApplicationID { get; set; }
+
+        public LeaveApplications Application { get; set; }
+
+        #endregion
+
+        [Required]
         [Column("ApprovedOn", TypeName = "Date")]
         [DataType(DataType.Date)]
-        [Display(Name = "Approved On", GroupName = "Employee's Leave Applications Details")]
+        [Display(Name = "Approved On", GroupName = "Employee's Leave Approvals Details")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true, NullDisplayText = "Not Approved Yet.")]
         public DateTime ApprovedOn { get; set; }
 
-        #region Employee ID (foreign key)
+        #region Approved By (foreign key)
 
         [Required]
-        [Column("ApprovalID")]
-        [Display(Name = "Approval", GroupName = "Employee's Leave Applications Details")]
-        public int? ApprovalID { get; set; }
+        [Column("ApprovedBy")]
+        [Display(Name = "Approved By", GroupName = "Employee's Leave Approvals Details")]
+        [ForeignKey("Employee")]
+        public int ApprovedBy { get; set; }
 
-        [ForeignKey("ApprovalID")]
-        public Employee Approval { get; set; }
+        public Employee Employee { get; set; }
 
         #endregion
+
     }
 }

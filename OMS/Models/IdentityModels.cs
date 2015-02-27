@@ -31,22 +31,12 @@ namespace OMS.Models
             return new ApplicationDbContext();
         }
 
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-
-            // Bind Approvers Navigation Property to Approval Foreign Key, as Application Leaves Table have multiple FK with Employee Table
-            modelBuilder.Entity<LeaveApplications>()
-                        .HasRequired(la => la.Approval)
-                        .WithMany(ap => ap.Approvers)
-                        .HasForeignKey(la => la.ApprovalID)
-                        .WillCascadeOnDelete(false);
-        }
-
         public DbSet<Employee> Employee { get; set; }
 
         public DbSet<Leaves> Leaves { get; set; }
 
         public DbSet<LeaveApplications> LeaveApplications { get; set; }
+
+        public DbSet<LeaveApprovals> LeaveApprovals { get; set; }
     }
 }

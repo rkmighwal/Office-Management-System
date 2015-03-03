@@ -67,7 +67,10 @@ namespace OMS.Models
 
         // Foreign Key, with Leave Approvals
         public virtual ICollection<LeaveApprovals> LeaveApprovals { get; set; }
-        
+
+        // Foreign Key, with Resource
+        public virtual ICollection<Resource> Resource { get; set; }
+
         #endregion
     }
 
@@ -81,7 +84,7 @@ namespace OMS.Models
             Applied = 0;
             MonthlyLimit = 1;
         }
-        
+
         #region Employee ID (foreign key)
 
         [Required]
@@ -135,14 +138,14 @@ namespace OMS.Models
         }
 
         [Key]
-        [Display(Name = "ID", GroupName = "Employee's Leave Applications Details")]
+        [Display(Name = "ID", GroupName = "Leave Applications Details")]
         public int ID { get; set; }
 
         #region Employee ID (foreign key)
 
         [Required]
         [Column("EmployeeID")]
-        [Display(Name = "Employee", GroupName = "Employee's Leave Applications Details")]
+        [Display(Name = "Employee", GroupName = "Leave Applications Details")]
         [ForeignKey("Employee")]
         public int EmployeeID { get; set; }
 
@@ -153,24 +156,24 @@ namespace OMS.Models
         [Required]
         [Column("StartDate", TypeName = "Date")]
         [DataType(DataType.Date)]
-        [Display(Name = "Start Date", GroupName = "Employee's Leave Applications Details")]
+        [Display(Name = "Start Date", GroupName = "Leave Applications Details")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime StartDate { get; set; }
 
         [Required]
         [Column("EndDate", TypeName = "Date")]
         [DataType(DataType.Date)]
-        [Display(Name = "End Date", GroupName = "Employee's Leave Applications Details")]
+        [Display(Name = "End Date", GroupName = "Leave Applications Details")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime EndDate { get; set; }
 
         [Column("Approved")]
-        [Display(Name = "Is Approved?")]
+        [Display(Name = "Is Approved?", GroupName = "Leave Applications Details")]
         public bool Approved { get; set; }
 
         [Column("AppliedOn", TypeName = "Date")]
         [DataType(DataType.Date)]
-        [Display(Name = "Applied On", GroupName = "Employee's Leave Applications Details")]
+        [Display(Name = "Applied On", GroupName = "Leave Applications Details")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime AppliedOn { get; set; }
 
@@ -178,9 +181,9 @@ namespace OMS.Models
 
         // Foreign Key, with Leave Approvals
         public virtual LeaveApprovals LeaveApprovals { get; set; }
-        
+
         #endregion
-        
+
     }
 
     [Table("Leave Approvals")]
@@ -190,7 +193,7 @@ namespace OMS.Models
 
         [Required]
         [Column("ApplicationID")]
-        [Display(Name = "Application ID", GroupName = "Employee's Leave Approvals Details")]
+        [Display(Name = "Application", GroupName = "Leave Approvals Details")]
         [ForeignKey("Application")]
         [Key]
         public int ApplicationID { get; set; }
@@ -202,7 +205,7 @@ namespace OMS.Models
         [Required]
         [Column("ApprovedOn", TypeName = "Date")]
         [DataType(DataType.Date)]
-        [Display(Name = "Approved On", GroupName = "Employee's Leave Approvals Details")]
+        [Display(Name = "Approved On", GroupName = "Leave Approvals Details")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true, NullDisplayText = "Not Approved Yet.")]
         public DateTime ApprovedOn { get; set; }
 
@@ -210,7 +213,7 @@ namespace OMS.Models
 
         [Required]
         [Column("ApprovedBy")]
-        [Display(Name = "Approved By", GroupName = "Employee's Leave Approvals Details")]
+        [Display(Name = "Approved By", GroupName = "Leave Approvals Details")]
         [ForeignKey("Employee")]
         public int ApprovedBy { get; set; }
 
@@ -219,4 +222,181 @@ namespace OMS.Models
         #endregion
 
     }
+
+    [Table("Tasks")]
+    public class Tasks : RecordDetails
+    {
+        // Setting Default Values using Constructor
+        public Tasks()
+        {
+            OrderID = 0;
+            ParentID = null;
+        }
+
+        [Key]
+        [Display(Name = "ID", GroupName = "Task Details")]
+        public int ID { get; set; }
+
+        [Required]
+        [Display(Name = "Order", GroupName = "Task Details")]
+        [Column("OrderID")]
+        public int OrderID { get; set; }
+
+        #region Parent Id (foreign key)
+
+        [Required]
+        [Column("ParentID")]
+        [Display(Name = "Parent Task", GroupName = "Task Details")]
+        [ForeignKey("Task")]
+        public int? ParentID { get; set; }
+
+        public Tasks Task { get; set; }
+
+        #endregion
+
+        [Required]
+        [Column("StartDate", TypeName = "DateTime2")]
+        [DataType(DataType.DateTime)]
+        [Display(Name = "Start Date", GroupName = "Task Details")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime StartDate { get; set; }
+
+        [Required]
+        [DataType(DataType.DateTime)]
+        [Column("DueDate", TypeName = "DateTime2")]
+        [Display(Name = "Due Date", GroupName = "Task Details")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime DueDate { get; set; }
+
+        [Required]
+        [Column("PercentComplete")]
+        [Display(Name = "% Complete", GroupName = "Task Details")]
+        public decimal PercentComplete { get; set; }
+
+        [Column("SummaryTask")]
+        [Display(Name = "Summary Task", GroupName = "Task Details")]
+        public bool SummaryTask { get; set; }
+
+        [Column("Description")]
+        [Display(Name = "Display", GroupName = "Task Details")]
+        [StringLength(300)]
+        public string Description { get; set; }
+
+        #region Navigation Properties
+
+        // Foreign Key, with Tasks
+        public virtual Tasks Tasks { get; set; }
+
+        // Foreign Key, with Resource Assignment
+        public virtual ICollection<ResourceAssignment> ResourceAssignment { get; set; }
+
+        // Foreign Key, with Task Dependencies
+        public virtual ICollection<TaskDependency> PredecessorTasks { get; set; }
+
+        // Foreign Key, with Task Dependencies
+        public virtual ICollection<TaskDependency> SuccessorTasks { get; set; }
+
+        #endregion
+
+    }
+
+    [Table("Resources")]
+    public class Resource : RecordDetails
+    {
+        [Key]
+        [Display(Name = "ID", GroupName = "Resource Details")]
+        public int ID { get; set; }
+
+        #region Employee ID (foreign key)
+
+        [Required]
+        [Column("EmployeeID")]
+        [Display(Name = "Employee", GroupName = "Resource Details")]
+        [ForeignKey("Employee")]
+        public int EmployeeID { get; set; }
+
+        public Employee Employee { get; set; }
+
+        #endregion
+
+        [Required]
+        [Column("Color")]
+        [StringLength(6)]
+        [Display(Name = "Color", GroupName = "Resource Details")]
+        public string Color { get; set; }
+
+        #region Navigation Properties
+
+        // Foreign Key, with Resource Assignment
+        public virtual ICollection<ResourceAssignment> ResourceAssignment { get; set; }
+
+        #endregion
+
+    }
+
+    [Table("Resource Assignments")]
+    public class ResourceAssignment : RecordDetails
+    {
+        [Key]
+        [Display(Name = "ID", GroupName = "Resource Assignment Details")]
+        public int ID { get; set; }
+
+        #region Resource ID (foreign key)
+
+        [Required]
+        [Column("ResourceID")]
+        [Display(Name = "Resource", GroupName = "Resouce Assignment Details")]
+        [ForeignKey("Resource")]
+        public int ResourceID { get; set; }
+
+        public Resource Resource { get; set; }
+
+        #endregion
+
+        #region Task ID (foreign key)
+
+        [Required]
+        [Column("TaskID")]
+        [Display(Name = "Task", GroupName = "Resouce Assignment Details")]
+        [ForeignKey("Task")]
+        public int TaskID { get; set; }
+
+        public Tasks Task { get; set; }
+
+        #endregion
+
+    }
+
+    [Table("Task Dependencies")]
+    public class TaskDependency : RecordDetails
+    {
+        [Key]
+        [Display(Name = "ID", GroupName = "Task Dependency Details")]
+        public int ID { get; set; }
+
+        #region Task ID (foreign key)
+
+        [Required]
+        [Column("PredecessorID")]
+        [Display(Name = "Predecessor", GroupName = "Task Dependency Details")]
+        [ForeignKey("Predecessor")]
+        public int PredecessorID { get; set; }
+
+        public Tasks Predecessor { get; set; }
+
+        #endregion
+
+        #region Task ID (foreign key)
+
+        [Required]
+        [Column("SuccessorID")]
+        [Display(Name = "Successor", GroupName = "Task Dependency Details")]
+        [ForeignKey("Successor")]
+        public int SuccessorID { get; set; }
+
+        public Tasks Successor { get; set; }
+
+        #endregion
+    }
+
 }

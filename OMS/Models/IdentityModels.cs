@@ -31,6 +31,19 @@ namespace OMS.Models
             return new ApplicationDbContext();
         }
 
+        protected override void OnModelCreating(System.Data.Entity.DbModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Tasks>().Property(t => t.PercentComplete).HasPrecision(3, 2);
+
+            modelBuilder.Entity<TaskDependency>()
+                    .HasRequired(td => td.Successor)
+                    .WithMany(t => t.SuccessorTasks)
+                    .HasForeignKey(td => td.SuccessorID)
+                    .WillCascadeOnDelete(false);
+
+            base.OnModelCreating(modelBuilder);
+        }
+
         public DbSet<Employee> Employee { get; set; }
 
         public DbSet<Leaves> Leaves { get; set; }
@@ -38,5 +51,13 @@ namespace OMS.Models
         public DbSet<LeaveApplications> LeaveApplications { get; set; }
 
         public DbSet<LeaveApprovals> LeaveApprovals { get; set; }
+
+        public DbSet<Tasks> Tasks { get; set; }
+
+        public DbSet<Resource> Resource { get; set; }
+
+        public DbSet<ResourceAssignment> ResourceAssignment { get; set; }
+
+        public DbSet<TaskDependency> TaskDependency { get; set; }
     }
 }

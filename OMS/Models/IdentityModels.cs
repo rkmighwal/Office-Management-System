@@ -41,6 +41,11 @@ namespace OMS.Models
                     .HasForeignKey(td => td.SuccessorID)
                     .WillCascadeOnDelete(false);
 
+            modelBuilder.Entity<Tasks>()
+                    .HasOptional(t => t.ParentTask)
+                    .WithMany()
+                    .HasForeignKey(td => td.ParentID);
+
             base.OnModelCreating(modelBuilder);
         }
 

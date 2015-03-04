@@ -244,13 +244,11 @@ namespace OMS.Models
 
         #region Parent Id (foreign key)
 
-        [Required]
         [Column("ParentID")]
         [Display(Name = "Parent Task", GroupName = "Task Details")]
-        [ForeignKey("Task")]
         public int? ParentID { get; set; }
 
-        public Tasks Task { get; set; }
+        public Tasks ParentTask { get; set; }
 
         #endregion
 
@@ -285,7 +283,7 @@ namespace OMS.Models
         #region Navigation Properties
 
         // Foreign Key, with Tasks
-        public virtual Tasks Tasks { get; set; }
+        public virtual Tasks ParentTasks { get; set; }
 
         // Foreign Key, with Resource Assignment
         public virtual ICollection<ResourceAssignment> ResourceAssignment { get; set; }

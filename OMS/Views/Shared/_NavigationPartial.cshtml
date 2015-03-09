@@ -1,20 +1,40 @@
-﻿<ul class="templatemo-sidebar-menu">
-    <li class="active"><a href="#"><i class="fa fa-home"></i>Dashboard</a></li>
-    <li class="sub open">
-        <a href="javascript:;">
-            <i class="fa fa-database"></i> Nested Menu <div class="pull-right"><span class="caret"></span></div>
-        </a>
-        <ul class="templatemo-submenu">
-            <li><a href="#">Aenean</a></li>
-            <li><a href="#">Pellentesque</a></li>
-            <li><a href="#">Congue</a></li>
-            <li><a href="#">Interdum</a></li>
-            <li><a href="#">Facilisi</a></li>
-        </ul>
-    </li>
-    <li><a href="data-visualization.html"><i class="fa fa-cubes"></i>Data Visualization</a></li>
-    <li><a href="maps.html"><i class="fa fa-map-marker"></i>Maps</a></li>
-    <li><a href="tables.html"><i class="fa fa-users"></i>Manage Users</a></li>
-    <li><a href="preferences.html"><i class="fa fa-cog"></i>My Account</a></li>
+﻿@using Microsoft.AspNet.Identity
+@{
+    var claimsIdentity = User.Identity as System.Security.Claims.ClaimsIdentity;
+    var role = string.Empty;
+
+    if (claimsIdentity != null)
+    {
+        var claim = claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.Role);
+        if (claim != null)
+        {
+            role = claim.Value.ToString();
+        }
+    }
+}
+<ul class="templatemo-sidebar-menu">
+    @Html.MenuItem("Dashboard", "Index", "Home", "fa fa-home")
+    @{
+        if (!string.IsNullOrEmpty(role))
+        {
+            switch (role.ToLower())
+            {
+                case "admin":
+                    <li class="sub open">
+                        <a href="javascript:;">
+                            <i class="fa fa-users"></i> User Management <div class="pull-right"><span class="caret"></span></div>
+                        </a>
+                        <ul class="templatemo-submenu">
+                            @Html.MenuItem("Add New User", "Create", "Users", null, htmlAttributes: new { data_modal = "" })
+                            @Html.MenuItem("Users", "Index", "Users")
+                            @Html.MenuItem("Change User Settings", "Index", "Account")
+                            @Html.MenuItem("User Activities", "Index", "Account")
+                        </ul>
+                    </li>
+                    break;
+            }
+        }
+    }
+    @Html.MenuItem("My Account", "Index", "Manage", "fa fa-cog")
     <li>@Html.Partial("_LoginPartial")</li>
 </ul>

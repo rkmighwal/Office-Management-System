@@ -1,0 +1,119 @@
+﻿@model IEnumerable<OMS.Models.UserViewModel>
+
+@{
+    ViewBag.Title = "Users";
+}
+
+<h1>Manage Users</h1>
+
+<div class="row margin-bottom-15">
+    <div class="col-md-12">
+        @using (Html.BeginForm())
+        {
+            <ul class="nav nav-pills pull-left" id="users-filter">
+                <li class="@(string.IsNullOrEmpty(ViewBag.Filter) || ViewBag.Filter == "all" ? "active" : "")" data-filter="all"><a href="javascript:void(0);">All Users <span class="badge">@ViewBag.UsersCount</span></a></li>
+                <li class="@(!string.IsNullOrEmpty(ViewBag.Filter) && ViewBag.Filter == "locked" ? "active" : "")" data-filter="locked"><a href="javascript:void(0);">Locked Users <span class="badge">@ViewBag.LockedUsersCount</span></a></li>
+            </ul>
+            @Html.Hidden("filter")
+        }
+        <div class="btn-group pull-right" id="templatemo_sort_btn">
+            <button type="button" class="btn btn-default">Sort by</button>
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                <span class="caret"></span>
+                <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                <li><a href="#">First Name</a></li>
+                <li><a href="#">Last Name</a></li>
+                <li><a href="#">Username</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover table-bordered">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Name)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Surname)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.UserName)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Role)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Email)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.EmailConfirmed)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.PhoneNumber)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.LockoutEnabled)
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int rowNo = 1; }
+                    @foreach (var item in Model)
+                    {
+                    <tr>
+                        <td>
+                            @rowNo
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Surname)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.UserName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Role)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Email)
+                        </td>
+                        <td>
+                            @Html.YesNoFor(modelItem => item.EmailConfirmed)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PhoneNumber)
+                        </td>
+                        <td>
+                            @Html.YesNoFor(modelItem => item.LockoutEnabled)
+                        </td>
+                    </tr>
+                        rowNo++;
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        jQuery(function () {
+            jQuery('#users-filter').children('li').click(function () {
+                var $sender = jQuery(this);
+                var form = $sender.closest('form');
+                if (form && form.length) {
+                    form.find('input[type="hidden"]').val($sender.data('filter'));
+                    form.get(0).submit();
+                }
+            });
+        });
+    </script>
+}

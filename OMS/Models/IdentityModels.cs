@@ -64,5 +64,6 @@ namespace OMS.Models
         public DbSet<ResourceAssignment> ResourceAssignment { get; set; }
 
         public DbSet<TaskDependency> TaskDependency { get; set; }
+
     }
 }
